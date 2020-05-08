@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Settings</h1>
+    <form action="" method="post" enctype="multipart/form-data" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.slide_timeout.label }}<br>
+            {{ form.slide_timeout() }}<br>
+        </p>
+        <p>
+            {{ form.background_color.label }}<br>
+            {{ form.background_color() }}<br>
+            
+        </p>
+        <p>
+            {{ form.background_image.label }}<br>
+            {{ form.background_image() }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm
+from app.forms import LoginForm, CarruselSettingsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
@@ -10,8 +10,20 @@ from werkzeug.urls import url_parse
 @app.route('/index')
 @login_required
 def index():
-    user = {'username':'gato'}
+    user = {'username':current_user.username}
     return render_template('index.html',title='Home',user=user)
+
+@login_required
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    form = CarruselSettingsForm()
+    print("Hola")
+    print(form.slide_timeout.data)
+    print(form.background_color.data)
+    if form.validate_on_submit():
+        pass
+    return render_template('admin.html', title='admin carrusel',form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,7 +31,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter('username: '+ form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
