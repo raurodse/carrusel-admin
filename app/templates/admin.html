@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script>
+        function update_timeout(timeout){
+            document.querySelector('#timeout_display').value = timeout;
+        }
+    </script>
     <h1>Settings</h1>
     <form action="" method="post" enctype="multipart/form-data" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.slide_timeout.label }}<br>
-            {{ form.slide_timeout() }}<br>
+            {{ form.slide_timeout(min=0, max=120,step=5, oninput="update_timeout(value)", value=form.slide_timeout.data) }}
+            <output id="timeout_display" for="slide_timeout">{{ form.slide_timeout.data }}</output><span> s</span><br>
+        </p>
+        <p>
+            {{ form.transition.label }}<br>
+            {{ form.transition() }}<br>
         </p>
         <p>
             {{ form.background_color.label }}<br>
@@ -17,6 +27,15 @@
             {{ form.background_image.label }}<br>
             {{ form.background_image() }}<br>
         </p>
+        <p>
+            {{ form.title_size.label }}<br>
+            {{ form.title_size() }}<br>
+        </p>
+        <p>
+            {{ form.description_size.label }}<br>
+            {{ form.description_size() }}<br>
+        </p>
+        <p>{{ form.fullscreen() }} {{ form.fullscreen.label }}</p>
         <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}

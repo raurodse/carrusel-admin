@@ -17,9 +17,6 @@ def index():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     form = CarruselSettingsForm()
-    print("Hola")
-    print(form.slide_timeout.data)
-    print(form.background_color.data)
     if form.validate_on_submit():
         pass
     return render_template('admin.html', title='admin carrusel',form=form)
