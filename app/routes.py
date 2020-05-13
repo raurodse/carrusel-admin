@@ -4,6 +4,18 @@ from app.forms import LoginForm, CarruselSettingsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
+from flask_babel import lazy_gettext as _l
+from json import dump as json_dump, load as json_load
+import os
+
+def validate_user(f):
+    def wrapper(*args,**kwargs):
+        if current_user.username == 'alu01':
+            return render_template('error.html',user=current_user.username)
+        print(f.__name__,f.__module__)
+
+        return f(*args,**kwargs)
+    return wrapper
 
 
 @app.route('/')
@@ -13,12 +25,31 @@ def index():
     user = {'username':current_user.username}
     return render_template('index.html',title='Home',user=user)
 
-@login_required
 @app.route('/admin', methods=['GET', 'POST'])
+@login_required
+@validate_user
 def admin():
     form = CarruselSettingsForm()
-    if form.validate_on_submit():
-        pass
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            flash(_l('Config saved'))
+            if form.background_image.data != None:
+                f = form.background_image.data
+                f.save(os.path.join(app.instance_path,'rsrc','carrusel_background'))
+            with open('/etc/lliurex-news/carrusel.conf','w') as fd:
+                config = form.data
+                config.pop('background_image')
+                config.pop('submit')
+                config.pop('csrf_token')
+                json_dump(config, fd, indent=4)
+    else:
+        if os.path.exists('/etc/lliurex-news/carrusel.conf'):
+            try:
+                with open('/etc/lliurex-news/carrusel.conf','r') as fd:
+                    obj = json_load(fd)
+                    form = CarruselSettingsForm(**obj)
+            except :
+                pass
     return render_template('admin.html', title='admin carrusel',form=form)
 
 
@@ -30,7 +61,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter('username: '+ form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash(_l('Invalid username or password'))
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')

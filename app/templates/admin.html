@@ -2,8 +2,8 @@
 
 {% block content %}
     <script>
-        function update_timeout(timeout){
-            document.querySelector('#timeout_display').value = timeout;
+        function update_label(timeout,id){
+            document.querySelector(id).value = timeout;
         }
     </script>
     <h1>Settings</h1>
@@ -11,7 +11,7 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.slide_timeout.label }}<br>
-            {{ form.slide_timeout(min=0, max=120,step=5, oninput="update_timeout(value)", value=form.slide_timeout.data) }}
+            {{ form.slide_timeout(min=0, max=120,step=5, oninput="update_label(value,'#timeout_display')", value=form.slide_timeout.data) }}
             <output id="timeout_display" for="slide_timeout">{{ form.slide_timeout.data }}</output><span> s</span><br>
         </p>
         <p>
@@ -29,11 +29,13 @@
         </p>
         <p>
             {{ form.title_size.label }}<br>
-            {{ form.title_size() }}<br>
+            {{ form.title_size(min=8, max=32, oninput="update_label(value,'#title_size_display')", value=form.title_size.data) }}
+            <output id="title_size_display" for="title_size">{{ form.title_size.data }}</output><span> pt</span><br>
         </p>
         <p>
             {{ form.description_size.label }}<br>
-            {{ form.description_size() }}<br>
+            {{ form.description_size(min=8, max=18, oninput="update_label(value,'#description_size_display')", value=form.description_size.data) }}
+            <output id="description_size_display" for="description_size">{{ form.description_size.data }}</output><span> pt</span><br>
         </p>
         <p>{{ form.fullscreen() }} {{ form.fullscreen.label }}</p>
         <p>{{ form.submit() }}</p>
