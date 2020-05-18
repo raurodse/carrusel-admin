@@ -11,7 +11,7 @@ import os
 def validate_user(f):
     def wrapper(*args,**kwargs):
         if current_user.username == 'alu01':
-            return render_template('error.html',user=current_user.username)
+            return render_template('access_denied.html',user=current_user.username)
         print(f.__name__,f.__module__)
 
         return f(*args,**kwargs)
