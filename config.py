@@ -10,3 +10,4 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LDAP_REQUIRE_CERT = ssl.CERT_NONE
     LANGUAGES = ['ca_ES_valencia','en']
+    STATIC_FOLDER = "/static"
